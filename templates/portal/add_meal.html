@@ -1,0 +1,40 @@
+{% extends 'portal/base.html' %}
+
+{% block page %}
+    <div class="col-lg-offset-2 col-lg-8">
+        <div class="panel">
+            <div class="panel-heading bg-blue">
+                <h4 class="panel-title text-center text-white">
+                    Add Meal
+                </h4>
+            </div>
+            <div class="panel-body">
+                <form method="POST" action="{% url 'addmeal'%}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="first_name">Meal Name</label>
+                        <input type="text" class="form-control"  name="name" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                        <label >Meal Short Description</label>
+                        <input type="text" class="form-control"  name="short_description" placeholder="Short Description">
+                        </div>
+                        <div class="form-group">
+                        <label >Meal Price</label>
+                        <input type="text" class="form-control"   name="price" placeholder="Price">
+                        </div>
+                         <div class="form-group">
+                          <input type="text" class="form-control"  value="{{restaurant.id}}"  name="restaurant_id" hidden>
+                          </div>
+                            
+                              <div class="form-group">
+                                <label >Meal Image</label>
+                                <input type="file" class="form-control" name="image">
+                                </div>
+                              
+                    <button type="submit" class="btn btn-pink">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
