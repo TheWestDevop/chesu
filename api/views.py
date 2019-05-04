@@ -28,7 +28,7 @@ def getAllRestaurants(request):
               "name":restaurant.name,
               "phone":restaurant.phone,
               "address":restaurant.address,
-              "logo":restaurant.logo,
+              "logo":str(restaurant.logo),
               "user id":user.id
            }
            items.append(item) 
@@ -59,7 +59,7 @@ def getAllMeals(request,restaurant_id):
               "id":meal.id,
               "name":meal.name,
               "short_desc":meal.short_description,
-              "image":meal.image,
+              "image":str(meal.image),
               "price":meal.price,
               "restaurant id":restaurant.id
            }
