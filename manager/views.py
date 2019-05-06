@@ -44,7 +44,7 @@ def OrderMeal(request):
 
          orders = Order.objects.filter(
             restaurant=restaurant).order_by("-id")
-         return render(request, 'portal/order.html', {"orders": orders, "restaurant": restaurant, "user": user})
+         return render(request, 'manager/portal/order.html', {"orders": orders, "restaurant": restaurant, "user": user})
     else:
            return redirect('login')
 
@@ -82,7 +82,7 @@ def Account(request):
                          logo=filename,
                          email=email
                          )
-             return render(request, 'portal/account.html', {
+             return render(request, 'manager/portal/account.html', {
               "user": user,
               "restaurant": restaurant
                 })
@@ -92,7 +92,7 @@ def Account(request):
         userid = request.session.get('userId')
         user = User.objects.get(id=userid)
         restaurant = Restaurant.objects.get(user_id=userid)
-        return render(request, 'portal/account.html', {"user": user,"restaurant":restaurant})
+        return render(request, 'manager/portal/account.html', {"user": user,"restaurant":restaurant})
     else:
            return redirect('login')
 
@@ -105,7 +105,7 @@ def Meals(request):
 
         meals = Meal.objects.filter(restaurant=restaurantname).order_by("-id")
 
-        return render(request, 'portal/meal.html', {"meals": meals,"user": user,"restaurant":restaurantname})
+        return render(request, 'manager/portal/meal.html', {"meals": meals,"user": user,"restaurant":restaurantname})
 
     else:
         return redirect('login')
@@ -136,7 +136,7 @@ def AddMeal(request):
 
         return redirect('meal')
 
-      return render(request, 'portal/add_meal.html', {"restaurant":restaurant})
+      return render(request, 'manager/portal/add_meal.html', {"restaurant":restaurant})
     else:     
        return redirect('login')
 
@@ -147,7 +147,9 @@ def EditMeal(request, id):
     if request.session.has_key('userId'):
 
         meal = Meal.objects.get(id=id)
-
+        userid = request.session.get('userId')
+        user = User.objects.get(id=userid)
+        restaurant = Restaurant.objects.get(user_id=userid)
         if request.method == "POST":
             meal.name = request.POST.get('name')
             meal.short_description = request.POST.get('short_description')
@@ -160,22 +162,27 @@ def EditMeal(request, id):
             meal.save()
             return redirect('meal')
 
-        return render(request, 'portal/edit_meal.html', {"meal": meal})
+        return render(request, 'manager/portal/edit_meal.html', {"meal": meal,"user":user,"restaurant":restaurant})
      
     else:     
        return redirect('login')
 
 
-def Customer(request):
+def customer(request):
     if request.session.has_key('userId'):
-         userid = request.session.get('userId')
-         user = User.objects.get(id=userid)
-         restaurant = Restaurant.objects.get(user_id=userid)
+         try:   
+             userid = request.session.get('userId')
+             user = User.objects.get(id=userid)
+             restaurant = Restaurant.objects.get(user_id=userid)
          
-         customer = Customer.objects.get( id=request.POST["id"], restaurant=restaurant)
+             customers = Customer.objects.get(user_id=userid)
 
-         orders = Order.objects.filter(restaurant=restaurant).order_by("-id")
-         return render(request, 'restaurant/customer.html', {"customers": customer})
+             orders = Order.objects.filter(restaurant=restaurant).order_by("-id")
+             meal = Meal.objects.filter(restaurant=restaurant).order_by("-id")
+             return render(request, 'manager/portal/customer.html', {"customers": customers,"meal":meal,"user":user,"restaurant":restaurant})
+         except ObjectDoesNotExist:
+              return render(request, 'manager/portal/customer.html', {"user":user,"restaurant":restaurant})
+              pass
     else:     
        return redirect('login')
 
@@ -228,7 +235,7 @@ def Report(request):
         "data": [driver.total_order for driver in top3drivers]
         }
 
-        return render(request, 'portal/report.html', {
+        return render(request, 'manager/portal/report.html', {
         "revenue": revenue,
         "orders": orders,
         "meal": meal,

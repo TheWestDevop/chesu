@@ -13,6 +13,7 @@ urlpatterns = [
     path('restaurant/meal',Meals,name="meal"),
     path('restaurant/addmeal',AddMeal,name="addmeal"),
     path('restaurant/editmeal/<int:id>/',EditMeal,name="edit-meal"),
-    path('restaurant/customer',Customer,name="customer"),
+    path('restaurant/customer',customer,name="customer"),
+    path('restaurant/add/customer',AddCustomer,name="add-customer"),
     path('restaurant/report',Report,name="report"),
 ]

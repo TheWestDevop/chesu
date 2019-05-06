@@ -81,15 +81,16 @@ WSGI_APPLICATION = 'su2.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+   'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'd968rvthgopja5',
         'USER' : 'ulkavailtwfoco',
         'PASSWORD' :'ad031e9b21c2eaea741738501e08700b6f933f2254c7e1f605cbe71e0b05f12e',
-        'HOST' :'ec2-54-225-106-93.compute-1.amazonaws.com',
+       'HOST' :'ec2-54-225-106-93.compute-1.amazonaws.com',
         'PORT' : '5432',
     }
 }
+
 
 
 # Password validation
@@ -128,10 +129,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static')
+]
+
+STATICFILES_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 LOGIN_REDIRECT_URL = '/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
