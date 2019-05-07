@@ -49,9 +49,7 @@ def AuthUser(request):
     if request.method == 'POST':
         username = request.POST.get('user')
         plainpassword = request.POST.get('password')
-        
-        
-    try:
+        try:
             user = User.objects.get(username=username)
 
             secret = user.secret
@@ -67,7 +65,7 @@ def AuthUser(request):
             else:
                 return JsonResponse({"status": "invalid credentials"}) 
                 pass
-    except ObjectDoesNotExist:
+        except ObjectDoesNotExist:
             return JsonResponse({"status": "User does not exist"}) 
             pass
 
