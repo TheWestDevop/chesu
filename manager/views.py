@@ -412,13 +412,6 @@ def CreateUser(request):
 def loginAdmin(request):
     return render(request, 'website/admin_sign_in.html')
 
-def editUser(request):
-    if request.session.has_key('userId'):
-
-    else:
-        return redirect('loginAdmin')
-
-
 def secretGenerator():
     letters = string.ascii_lowercase + string.digits + string.punctuation
     return ''.join(random.choice(letters) for i in range(10))
