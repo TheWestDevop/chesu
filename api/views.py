@@ -71,7 +71,7 @@ def AuthUser(request):
 
     else:
         return JsonResponse({"status": "invalid request"}) 
-
+    return JsonResponse({"status": "invalid request"}) 
 
 
 @require_http_methods("GET")
