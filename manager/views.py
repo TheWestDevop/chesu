@@ -116,7 +116,7 @@ def AddMeal(request):
         name = request.POST.get('name')
         shortdesc = request.POST.get('short_description')
         price = request.POST.get('price')
-        restaurant = request.POST.get('restaurant_id')
+        restaurant_id = request.POST.get('restaurant_id')
         image = request.FILES['image']
         fs = FileSystemStorage()
         filename = fs.save(image.name.strip(), image)
@@ -126,8 +126,8 @@ def AddMeal(request):
             short_description=shortdesc,
             image=filename,
             price=price,
-            restaurant_id=restaurant.id
-        )
+            restaurant_id=restaurant_id
+            )
 
         return redirect('meal')
 
