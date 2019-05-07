@@ -307,15 +307,13 @@ def Auth(request):
             user = User.objects.get(username=username)
 
             secret = user.secret
-            print(secret)
+            
             passwordConfirm = hashPassword(plainpassword+secret)
-            print(passwordConfirm)
-            print(user.password)
-            print(passwordConfirm == user.password)
+        
 
             if passwordConfirm == user.password :
               request.session['userId'] = user.id
-              print(request.session['userId'])
+              
               return redirect('order')
               pass
         

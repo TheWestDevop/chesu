@@ -43,6 +43,38 @@ def CreateUser(request):
         return JsonResponse({"status": "failed try again"})
 
 
+@require_http_methods("POST")
+@csrf_exempt
+def AuthUser(request):
+    if request.method == 'POST':
+        username = request.POST.get('user')
+        plainpassword = request.POST.get('password')
+        
+        
+    try:
+            user = User.objects.get(username=username)
+
+            secret = user.secret
+            
+            passwordConfirm = hashPassword(plainpassword+secret)
+        
+
+            if passwordConfirm == user.password :
+              request.session['userId'] = user.id
+              return JsonResponse({"status": "you are logged in"}) 
+              pass
+        
+            else:
+                return JsonResponse({"status": "invalid credentials"}) 
+                pass
+    except ObjectDoesNotExist:
+            return JsonResponse({"status": "User does not exist"}) 
+            pass
+
+    else:
+        return JsonResponse({"status": "invalid request"}) 
+
+
 
 @require_http_methods("GET")
 def getAllRestaurants(request):
@@ -167,154 +199,177 @@ def addOrder(request):
 @require_http_methods("GET")
 @csrf_exempt
 def getLatestOrder(request):
-    access_token = AccessToken.objects.get(token = request.GET.get("access_token"),
-        expires__gt = timezone.now())
-
-    customer = access_token.user.customer
+  if request.session.has_key('userId'):  
+    userid = request.session.get('userId')
+    user = User.objects.get(id=userid)
+    customer = Customer.objects.get(user_id=userid)
     order = Order.objects.filter(customer = customer).last()
-
     return JsonResponse({"order": order})
+  else:     
+       return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
 
 
 @require_http_methods("GET")
 def getDriverLocation(request):
-    access_token = AccessToken.objects.get(token = request.GET.get("access_token"),
-        expires__gt = timezone.now())
-
-    customer = access_token.user.customer
-
+  if request.session.has_key('userId'):  
+    userid = request.session.get('userId')
+    user = User.objects.get(id=userid)
+    customer = Customer.objects.get(user_id=userid)
     # Get driver's location related to this customer's current order.
     current_order = Order.objects.filter(customer = customer, status = Order.DELIVERED).last()
     location = current_order.driver.location
 
     return JsonResponse({"location": location})    
+  else:     
+       return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
 
 
 @require_http_methods("GET")
 def restaurantOrderNotification(request, lastTime):
-    notification = Order.objects.filter(restaurant = request.user.restaurant,
-        created_at__gt = last_Time).count()
-
-    return JsonResponse({"notification": notification})
-
+     if request.session.has_key('userId'):  
+        userid = request.session.get('userId')
+        user = User.objects.get(id=userid)
+        restaurant = Restaurant.objects.get(user_id=userid)
+        notification = Order.objects.filter(restaurant = restaurant,
+           created_at__gt = lastTime).count()
+        return JsonResponse({"notification": notification})
+     else:
+        return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
 
 @require_http_methods("GET")
 def getReadyOrder(request):
-    orders = Order.objects.filter(status = Order.READY, driver = None).order_by("-id")   
-    return JsonResponse({"orders": orders}) 
+    if request.session.has_key('userId'):  
+        userid = request.session.get('userId')
+        user = User.objects.get(id=userid)
+        restaurant = Restaurant.objects.get(user_id=userid)
+        orders = Order.objects.filter(restaurant= restaurant,status = Order.READY, driver = None).order_by("-id")   
+        return JsonResponse({"orders": orders}) 
+    else:
+        return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
 
 
 @require_http_methods("GET")
 @csrf_exempt
 def driverPickOrder(request):
-    if request.method == "POST":
-        # Get token
-        access_token = AccessToken.objects.get(token = request.POST.get("access_token"),
-        expires__gt = timezone.now())
 
-        # Get Driver
-        driver = access_token.user.driver
-
+    if request.session.has_key('userId'):  
+        userid = request.session.get('userId')
+        user = User.objects.get(id=userid)
+        if request.method == "POST":
+         # Get Driver
+           driver = Driver.objects.get(user_id=userid)
         # Check if driver can only pick up one order at the same time
-        if Order.objects.filter(driver = driver).exclude(status = Order.DELIVERED):
-            return JsonResponse({"status": "failed", "error": "You can only pick one order at the same time."})
+           if Order.objects.filter(driver = driver).exclude(status = Order.DELIVERED):
+              return JsonResponse({"status": "failed", "error": "You can only pick one order at the same time."})
 
-        try:
-            order = Order.objects.get(
-                id = request.POST["order_id"],
-                driver = None,
-                status = Order.READY
-            )
-            order.driver = driver
-            order.status = Order.ONTHEWAY
-            order.picked_at = timezone.now()
-            order.save()
+              try:
+                 order = Order.objects.get(
+                 id = request.POST["order_id"],
+                 driver = None,
+                 status = Order.READY
+                 )
+                 order.driver = driver
+                 order.status = Order.ONTHEWAY
+                 order.picked_at = timezone.now()
+                 order.save()
 
-            return JsonResponse({"status": "success"})
+                 return JsonResponse({"status": "success"})
 
-        except Order.DoesNotExist:
-            return JsonResponse({"status": "failed", "error": "This order has been picked up by another."})
+              except Order.DoesNotExist:
+                    return JsonResponse({"status": "failed", "error": "This order has been picked up by another."})
+    else:
+        return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
-    return JsonResponse({})
 
 
 
 @require_http_methods("GET")
 def getLatestDriver(request):
-    access_token = AccessToken.objects.get(token = request.GET.get("access_token"),
-        expires__gt = timezone.now())
+    if request.session.has_key('userId'):  
+        userid = request.session.get('userId')
+        user = User.objects.get(id=userid)
 
-    driver = access_token.user.driver
-    order = OrderSerializer(
-        Order.objects.filter(driver = driver).order_by("picked_at").last()
-    ).data
-
-    return JsonResponse({"order": order})
+        driver = Driver.objects.get(user_id=userid)
+        order = OrderSerializer(
+                Order.objects.filter(driver = driver).order_by("picked_at").last()
+                ).data
+        return JsonResponse({"order": order})
+    else:
+        return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
 
 
 @require_http_methods("GET")
 @csrf_exempt
 def driverCompleteOrder(request):
-    access_token = AccessToken.objects.get(token = request.POST.get("access_token"),
-        expires__gt = timezone.now())
+    if request.session.has_key('userId'):  
+        userid = request.session.get('userId')
+        user = User.objects.get(id=userid)
 
-    driver = access_token.user.driver
-
-    order = Order.objects.get(id = request.POST["order_id"], driver = driver)
-    order.status = Order.DELIVERED
-    order.save()
-
-    return JsonResponse({"status": "success"})
+        driver = Driver.objects.get(user_id=userid) 
+        order = Order.objects.get(id = request.POST["order_id"], driver = driver)
+        order.status = Order.DELIVERED
+        order.save()
+        return JsonResponse({"status": "success"})
+    else:
+        return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
 
 
 @require_http_methods("GET")
 def driverGetRevenue(request):
-    access_token = AccessToken.objects.get(token = request.GET.get("access_token"),
-        expires__gt = timezone.now())
+   if request.session.has_key('userId'):  
+       userid = request.session.get('userId')
+       user = User.objects.get(id=userid)
 
-    driver = access_token.user.driver
+       driver = Driver.objects.get(user_id=userid)
 
-    from datetime import timedelta
+       from datetime import timedelta
 
-    revenue = {}
-    today = timezone.now()
-    current_weekdays = [today + timedelta(days = i) for i in range(0 - today.weekday(), 7 - today.weekday())]
+       revenue = {}
+       today = timezone.now()
+       current_weekdays = [today + timedelta(days = i) for i in range(0 - today.weekday(), 7 - today.weekday())]
 
-    for day in current_weekdays:
-        orders = Order.objects.filter(
-            driver = driver,
-            status = Order.DELIVERED,
-            created_at__year = day.year,
-            created_at__month = day.month,
-            created_at__day = day.day
-        )
+       for day in current_weekdays:
+           orders = Order.objects.filter(
+               driver = driver,
+               status = Order.DELIVERED,
+               created_at__year = day.year,
+               created_at__month = day.month,
+               created_at__day = day.day
+               )
 
-        revenue[day.strftime("%a")] = sum(order.total for order in orders)
+           revenue[day.strftime("%a")] = sum(order.total for order in orders)
 
-    return JsonResponse({"revenue": revenue})
+       return JsonResponse({"revenue": revenue})
+   else:
+        return JsonResponse({"status": "failed", "error": "Authentication is required."})
+
 
 
 
 @require_http_methods("GET")
 @csrf_exempt
 def driverUpdateLocation(request):
-    if request.method == "POST":
-        access_token = AccessToken.objects.get(token = request.POST.get("access_token"),
-            expires__gt = timezone.now())
+    if request.session.has_key('userId'):  
+       
+      if request.method == "POST":
+      
+        userid = request.session.get('userId')
+        user = User.objects.get(id=userid)
 
-        driver = access_token.user.driver
-
+        driver = Driver.objects.get(user_id=userid)
         # Set location string => database
         driver.location = request.POST["location"]
         driver.save()
 
         return JsonResponse({"status": "success"})
+    else:
+        return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
 
 

@@ -2,6 +2,8 @@ from django.urls import path
 from api.views import *
 
 urlpatterns = [
+    path('create/user/',CreateUser,name='create-user'),
+    path('auth/user/',AuthUser,name='auth-user'),
     path('restaurant/',getAllRestaurants,name="all-restaurants"),
     path('meals/<int:restaurant_id>',getAllMeals,name='all-meals'),
     path('add/order/',addOrder,name='add-order'),
