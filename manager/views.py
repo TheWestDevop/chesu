@@ -266,7 +266,7 @@ def SignUp(request):
         address = request.POST.get('address')
         logo = request.FILES['logo']
         fs = FileSystemStorage()
-        filename = fs.save(logo.name, logo)
+        filename = fs.save(logo.name.strip(), logo)
 
         user = User.objects.create(username=username,password=password,secret=secret )
         restaurant = Restaurant.objects.create(

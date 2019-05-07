@@ -3,9 +3,48 @@ from django.core.paginator import *
 from django.http import JsonResponse
 from django.views.decorators.http import *
 from django.views.decorators.csrf import csrf_exempt
-
-
+from django.views.decorators.http import *
+from django.core.files.storage import FileSystemStorage
+import random
+import string
+import hashlib
 # Create your views here.
+
+@require_http_methods("POST")
+@csrf_exempt
+def CreateUser(request):
+    if request.method == "POST":
+         # User Data
+        username = request.POST.get('username')
+        plainpassword = request.POST.get('password')
+        email = request.POST.get('email')
+        secret = secretGenerator()
+        password = hashPassword(str(plainpassword)+secret)
+      
+        # Restaurant Data
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        logo = request.FILES['logo']
+        fs = FileSystemStorage()
+        filename = fs.save(logo.name, logo)
+
+        user = User.objects.create(username=username,password=password,secret=secret )
+        restaurant = Restaurant.objects.create(
+            user=user,
+            name=name,
+            phone=phone,
+            address=address,
+            logo=filename,
+            email=email
+            )
+        return JsonResponse({"status": "account successfully created"})  
+    else:
+        return JsonResponse({"status": "failed try again"})
+
+
+
+@require_http_methods("GET")
 def getAllRestaurants(request):
         restaurants = Restaurant.objects.all().order_by("-id");
         page = request.GET.get('page',1)
@@ -38,6 +77,8 @@ def getAllRestaurants(request):
         return JsonResponse(data)
 
 
+
+@require_http_methods("GET")
 def getAllMeals(request,restaurant_id):
         meals = Meal.objects.filter(restaurant_id = restaurant_id).order_by("-id")
         page = request.GET.get('page',1)
@@ -69,15 +110,17 @@ def getAllMeals(request,restaurant_id):
 
         return JsonResponse(data)
 
+
+
+@require_http_methods("POST")
 @csrf_exempt
 def addOrder(request):
+  if request.session.has_key('userId'): 
     if request.method == "POST":
-        # Get token
-        access_token = AccessToken.objects.get(token = request.POST.get("access_token"),
-            expires__gt = timezone.now())
-
+        userid = request.session.get('userId')
+        user = User.objects.get(id=userid)
         # Get profile
-        customer = access_token.user.customer
+        customer = Customer.objects.get(user_id=userid)
 
         # Check whether customer has any order that is not delivered
         if Order.objects.filter(customer = customer).exclude(status = Order.DELIVERED):
@@ -117,7 +160,11 @@ def addOrder(request):
             return JsonResponse({"status": "success"})
         else:
             return JsonResponse({"status": "failed"})
+  else:     
+       return JsonResponse({"status": "failed", "error": "Authentication is required."})
 
+
+@require_http_methods("GET")
 @csrf_exempt
 def getLatestOrder(request):
     access_token = AccessToken.objects.get(token = request.GET.get("access_token"),
@@ -128,6 +175,9 @@ def getLatestOrder(request):
 
     return JsonResponse({"order": order})
 
+
+
+@require_http_methods("GET")
 def getDriverLocation(request):
     access_token = AccessToken.objects.get(token = request.GET.get("access_token"),
         expires__gt = timezone.now())
@@ -140,16 +190,25 @@ def getDriverLocation(request):
 
     return JsonResponse({"location": location})    
 
+
+
+@require_http_methods("GET")
 def restaurantOrderNotification(request, lastTime):
     notification = Order.objects.filter(restaurant = request.user.restaurant,
         created_at__gt = last_Time).count()
 
     return JsonResponse({"notification": notification})
 
+
+
+@require_http_methods("GET")
 def getReadyOrder(request):
     orders = Order.objects.filter(status = Order.READY, driver = None).order_by("-id")   
     return JsonResponse({"orders": orders}) 
 
+
+
+@require_http_methods("GET")
 @csrf_exempt
 def driverPickOrder(request):
     if request.method == "POST":
@@ -182,6 +241,9 @@ def driverPickOrder(request):
 
     return JsonResponse({})
 
+
+
+@require_http_methods("GET")
 def getLatestDriver(request):
     access_token = AccessToken.objects.get(token = request.GET.get("access_token"),
         expires__gt = timezone.now())
@@ -193,6 +255,9 @@ def getLatestDriver(request):
 
     return JsonResponse({"order": order})
 
+
+
+@require_http_methods("GET")
 @csrf_exempt
 def driverCompleteOrder(request):
     access_token = AccessToken.objects.get(token = request.POST.get("access_token"),
@@ -207,6 +272,8 @@ def driverCompleteOrder(request):
     return JsonResponse({"status": "success"})
 
 
+
+@require_http_methods("GET")
 def driverGetRevenue(request):
     access_token = AccessToken.objects.get(token = request.GET.get("access_token"),
         expires__gt = timezone.now())
@@ -232,6 +299,9 @@ def driverGetRevenue(request):
 
     return JsonResponse({"revenue": revenue})
 
+
+
+@require_http_methods("GET")
 @csrf_exempt
 def driverUpdateLocation(request):
     if request.method == "POST":
@@ -247,6 +317,15 @@ def driverUpdateLocation(request):
         return JsonResponse({"status": "success"})
 
 
+
+def secretGenerator():
+    letters = string.ascii_lowercase + string.digits + string.punctuation
+    return ''.join(random.choice(letters) for i in range(10))
+
+
+def hashPassword(word):
+    password = hashlib.sha256(word.encode()).hexdigest()
+    return password
 
 
 
