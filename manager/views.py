@@ -17,11 +17,6 @@ import hashlib
 def Home(request):
     return redirect('login')
 
-
-def obtain_auth_token(request):
-    return redirect(Home)
-
-
 def userHome(request):
     if request.session.has_key('userId'):
          return redirect(OrderMeal)
@@ -131,12 +126,12 @@ def AddMeal(request):
             short_description=shortdesc,
             image=filename,
             price=price,
-            restaurant_id=restaurant
+            restaurant_id=restaurant.id
         )
 
         return redirect('meal')
 
-      return render(request, 'manager/portal/add_meal.html', {"restaurant":restaurant})
+      return render(request,'manager/portal/add_meal.html', {"user": user,"restaurant":restaurant})
     else:     
        return redirect('login')
 
@@ -331,6 +326,97 @@ def Auth(request):
 
     else:
         return redirect('login')
+
+
+def authAdmin(request):
+    if request.method == 'POST':
+        username = request.POST.get('user')
+        plainpassword = request.POST.get('password')
+        
+        
+    try:
+            user = User.objects.get(username=username)
+
+            secret = user.secret
+            
+            passwordConfirm = hashPassword(plainpassword+secret)
+        
+
+            if passwordConfirm == user.password :
+              request.session['userId'] = user.id
+              
+              return redirect('users')
+              pass
+        
+            else:
+               errormsg = "Invalid Username or Password"
+               messages.error(request,errormsg)
+               return redirect('loginAdmin')
+               pass
+    except ObjectDoesNotExist:
+
+        errormsg = "User Doesn't Exist"
+        messages.error(request, errormsg)
+        return redirect('loginAdmin')
+        pass
+
+    else:
+        return redirect('loginAdmin')
+
+def allUser(request):
+    if request.session.has_key('userId'):
+         users = User.objects.all()
+         return render(request, 'Admin/portal/users.html', {"user":users})
+    else:
+        return redirect('loginAdmin') 
+
+def allRestaurant(request):
+    if request.session.has_key('userId'):
+         restaurant = Restaurant.objects.all()
+         return render(request, 'Admin/portal/restaurant.html', {"restaurant":restaurant})
+    else:
+        return redirect('loginAdmin') 
+     
+def CreateUser(request):
+    user = []
+    restaurant = []
+    if request.method == "POST":
+        # User Data
+        username = request.POST.get('username')
+        plainpassword = request.POST.get('password')
+        email = request.POST.get('email')
+        secret = secretGenerator()
+        password = hashPassword(str(plainpassword)+secret)
+      
+        # Restaurant Data
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        logo = request.FILES['logo']
+        fs = FileSystemStorage()
+        filename = fs.save(logo.name.strip(), logo)
+
+        user = User.objects.create(username=username,password=password,secret=secret )
+        restaurant = Restaurant.objects.create(
+            user=user,
+            name=name,
+            phone=phone,
+            address=address,
+            logo=filename,
+            email=email
+            )
+        return redirect('all-user')
+
+    return redirect('all-user')
+
+def loginAdmin(request):
+    return render(request, 'website/admin_sign_in.html')
+
+def editUser(request):
+    if request.session.has_key('userId'):
+
+    else:
+        return redirect('loginAdmin')
 
 
 def secretGenerator():
