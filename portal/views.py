@@ -21,6 +21,91 @@ def userHome(request):
          return redirect(OrderMeal)
     else:
         return redirect('login')
+		
+def Auth(request):
+    if request.method == 'POST':
+        username = request.POST.get('user')
+        plainpassword = request.POST.get('password')
+        
+        
+    try:
+            user = User.objects.get(username=username)
+
+            secret = user.secret
+            
+            passwordConfirm = hashPassword(plainpassword+secret)
+        
+
+            if passwordConfirm == user.password :
+              request.session['userId'] = user.id
+              
+              return redirect('order')
+              pass
+        
+            else:
+               errormsg = "Invalid Username or Password"
+               messages.error(request,errormsg)
+               return redirect('login')
+               pass
+    except ObjectDoesNotExist:
+
+        errormsg = "User Doesn't Exist"
+        messages.error(request, errormsg)
+        return redirect('login')
+        pass
+
+    else:
+        return redirect('login')
+
+
+def SignUp(request):
+    user = []
+    restaurant = []
+    if request.method == "POST":
+        # User Data
+        username = request.POST.get('username')
+        plainpassword = request.POST.get('password')
+        email = request.POST.get('email')
+        secret = secretGenerator()
+        password = hashPassword(str(plainpassword)+secret)
+      
+        # Restaurant Data
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        logo = request.FILES['logo']
+        fs = FileSystemStorage()
+        filename = fs.save(logo.name.strip(), logo)
+
+        user = User.objects.create(username=username,password=password,secret=secret )
+        restaurant = Restaurant.objects.create(
+            user=user,
+            name=name,
+            phone=phone,
+            address=address,
+            logo=filename,
+            email=email
+            )
+
+        errormsg = "Login to access your restaurant"
+        messages.error(request,errormsg)
+        return redirect('login')
+
+    return render(request, "portal/sign_up.html", {
+        "userform": user,
+        "restaurantform": restaurant
+    })
+	
+
+def Login(request):
+    return render(request, 'portal/sign_in.html')
+
+
+def Logout(request):
+    logout(request)
+    return redirect(Login)
+	
+
 
 def OrderMeal(request):
     if request.session.has_key('userId'):
@@ -38,7 +123,7 @@ def OrderMeal(request):
 
          orders = Order.objects.filter(
             restaurant=restaurant).order_by("-id")
-         return render(request, 'manager/order.html', {"orders": orders, "restaurant": restaurant, "user": user})
+         return render(request, 'portal/order.html', {"orders": orders, "restaurant": restaurant, "user": user})
     else:
            return redirect('login')
 
@@ -76,7 +161,7 @@ def Account(request):
                          logo=filename,
                          email=email
                          )
-             return render(request, 'manager/account.html', {
+             return render(request, 'portal/account.html', {
               "user": user,
               "restaurant": restaurant
                 })
@@ -86,7 +171,7 @@ def Account(request):
         userid = request.session.get('userId')
         user = User.objects.get(id=userid)
         restaurant = Restaurant.objects.get(user_id=userid)
-        return render(request, 'manager/account.html', {"user": user,"restaurant":restaurant})
+        return render(request, 'portal/account.html', {"user": user,"restaurant":restaurant})
     else:
            return redirect('login')
 
@@ -99,7 +184,7 @@ def Meals(request):
 
         meals = Meal.objects.filter(restaurant=restaurantname).order_by("-id")
 
-        return render(request, 'manager/meal.html', {"meals": meals,"user": user,"restaurant":restaurantname})
+        return render(request, 'portal/meal.html', {"meals": meals,"user": user,"restaurant":restaurantname})
 
     else:
         return redirect('login')
@@ -130,7 +215,7 @@ def AddMeal(request):
 
         return redirect('meal')
 
-      return render(request,'manager/add_meal.html', {"user": user,"restaurant":restaurant})
+      return render(request,'portal/add_meal.html', {"user": user,"restaurant":restaurant})
     else:     
        return redirect('login')
 
@@ -156,7 +241,7 @@ def EditMeal(request, id):
             meal.save()
             return redirect('meal')
 
-        return render(request, 'manager/edit_meal.html', {"meal": meal,"user":user,"restaurant":restaurant})
+        return render(request, 'portal/edit_meal.html', {"meal": meal,"user":user,"restaurant":restaurant})
      
     else:     
        return redirect('login')
@@ -173,9 +258,9 @@ def customer(request):
 
              orders = Order.objects.filter(restaurant=restaurant).order_by("-id")
              meal = Meal.objects.filter(restaurant=restaurant).order_by("-id")
-             return render(request, 'manager/customer.html', {"customers": customers,"meal":meal,"user":user,"restaurant":restaurant})
+             return render(request, 'portal/customer.html', {"customers": customers,"meal":meal,"user":user,"restaurant":restaurant})
          except ObjectDoesNotExist:
-              return render(request, 'manager/customer.html', {"user":user,"restaurant":restaurant})
+              return render(request, 'portal/customer.html', {"user":user,"restaurant":restaurant})
               pass
     else:     
        return redirect('login')
@@ -229,7 +314,7 @@ def Report(request):
         "data": [driver.total_order for driver in top3drivers]
         }
 
-        return render(request, 'manager/report.html', {
+        return render(request, 'portal/report.html', {
         "revenue": revenue,
         "orders": orders,
         "meal": meal,
@@ -241,54 +326,8 @@ def Report(request):
         })
     else:
          return redirect('login')    
+		 
 
-
-def SignUp(request):
-    user = []
-    restaurant = []
-    if request.method == "POST":
-        # User Data
-        username = request.POST.get('username')
-        plainpassword = request.POST.get('password')
-        email = request.POST.get('email')
-        secret = secretGenerator()
-        password = hashPassword(str(plainpassword)+secret)
-      
-        # Restaurant Data
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        address = request.POST.get('address')
-        logo = request.FILES['logo']
-        fs = FileSystemStorage()
-        filename = fs.save(logo.name.strip(), logo)
-
-        user = User.objects.create(username=username,password=password,secret=secret )
-        restaurant = Restaurant.objects.create(
-            user=user,
-            name=name,
-            phone=phone,
-            address=address,
-            logo=filename,
-            email=email
-            )
-
-        errormsg = "Login to access your restaurant"
-        messages.error(request,errormsg)
-        return redirect('login')
-
-    return render(request, "manager/sign_up.html", {
-        "userform": user,
-        "restaurantform": restaurant
-    })
-	
-
-def Login(request):
-    return render(request, 'manager/sign_in.html')
-
-
-def Logout(request):
-    logout(request)
-    return redirect(Login)
 	
 	
 def secretGenerator():

@@ -27,40 +27,7 @@ def genadmin(request):
 
 
 
-def Auth(request):
-    if request.method == 'POST':
-        username = request.POST.get('user')
-        plainpassword = request.POST.get('password')
-        
-        
-    try:
-            user = User.objects.get(username=username)
 
-            secret = user.secret
-            
-            passwordConfirm = hashPassword(plainpassword+secret)
-        
-
-            if passwordConfirm == user.password :
-              request.session['userId'] = user.id
-              
-              return redirect('order')
-              pass
-        
-            else:
-               errormsg = "Invalid Username or Password"
-               messages.error(request,errormsg)
-               return redirect('login')
-               pass
-    except ObjectDoesNotExist:
-
-        errormsg = "User Doesn't Exist"
-        messages.error(request, errormsg)
-        return redirect('login')
-        pass
-
-    else:
-        return redirect('login')
 
 
 def authAdmin(request):
@@ -101,14 +68,14 @@ def authAdmin(request):
 def allUser(request):
     if request.session.has_key('userId'):
          users = User.objects.all()
-         return render(request, 'admin/users.html', {"user":users})
+         return render(request, 'manager/users.html', {"user":users})
     else:
         return redirect('loginAdmin') 
 
 def allRestaurant(request):
     if request.session.has_key('userId'):
          restaurant = Restaurant.objects.all()
-         return render(request, 'admin/restaurant.html', {"restaurant":restaurant})
+         return render(request, 'manager/restaurant.html', {"restaurant":restaurant})
     else:
         return redirect('loginAdmin') 
      
@@ -145,7 +112,7 @@ def CreateUser(request):
     return redirect('all-user')
 
 def loginAdmin(request):
-    return render(request, 'admin/sign_in.html')
+    return render(request, 'manager/sign_in.html')
 
 def secretGenerator():
     letters = string.ascii_lowercase + string.digits + string.punctuation
