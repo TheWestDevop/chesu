@@ -98,7 +98,7 @@ def getAllRestaurants(request):
               "name":restaurant.name,
               "phone":restaurant.phone,
               "address":restaurant.address,
-              "logo":  settings.ROOT_URL + str(restaurant.logo),
+              "logo":  settings.ROOT_URL + "media/"+ str(restaurant.logo),
               "user id":user.id
            }
            items.append(item) 
@@ -131,7 +131,7 @@ def getAllMeals(request,restaurant_id):
               "id":meal.id,
               "name":meal.name,
               "short_desc":meal.short_description,
-              "image": settings.ROOT_URL + str(meal.image),
+              "image": settings.ROOT_URL + "media/"+  str(meal.image),
               "price":meal.price,
               "restaurant id":restaurant.id
            }
