@@ -141,7 +141,7 @@ LOGIN_REDIRECT_URL = '/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
+ROOT_URL="https://chesuapp.herokuapp.com/"
 
 import dj_database_url
 

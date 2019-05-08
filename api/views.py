@@ -5,6 +5,7 @@ from django.views.decorators.http import *
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import *
 from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 import random
 import string
 import hashlib
@@ -97,7 +98,7 @@ def getAllRestaurants(request):
               "name":restaurant.name,
               "phone":restaurant.phone,
               "address":restaurant.address,
-              "logo":str(restaurant.logo),
+              "logo":  settings.ROOT_URL + str(restaurant.logo),
               "user id":user.id
            }
            items.append(item) 
@@ -130,7 +131,7 @@ def getAllMeals(request,restaurant_id):
               "id":meal.id,
               "name":meal.name,
               "short_desc":meal.short_description,
-              "image":str(meal.image),
+              "image": settings.ROOT_URL + str(meal.image),
               "price":meal.price,
               "restaurant id":restaurant.id
            }
