@@ -6,7 +6,6 @@ urlpatterns = [
     path('vendor/sign-up',SignUp,name="sign-up"),
     path('vendor/',Login,name="login"),
     path('vendor/sign-out/',Logout,name="logout"),
-    path('',Login,name="home"),
     path('vendor/order/',OrderMeal,name="order"),
     path('vendor/account',Account,name="account"),
     path('vendor/meal',Meals,name="meal"),
