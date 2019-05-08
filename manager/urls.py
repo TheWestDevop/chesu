@@ -4,6 +4,7 @@ from manager.views import *
 urlpatterns = [
     
     path('restaurant/auth/',Auth,name="auth"),
+	path('restaurant/gen/',genadmin,name="genadmin"),
     path('restaurant/authAdmin/',authAdmin,name="authAdmin"),
     path('restaurant/Admin/login',loginAdmin,name="loginAdmin"),
     path('restaurant/Admin/create/user',CreateUser,name="admin-create-user"),

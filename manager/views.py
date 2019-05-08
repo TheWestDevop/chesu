@@ -15,7 +15,14 @@ import hashlib
 
 
 
-
+def genadmin(request):
+	username = "admin"
+	plainpassword = "admin"
+	secret = secretGenerator()
+	password = hashPassword(str(plainpassword)+secret)
+	user = User.objects.create(username=username,password=password,secret=secret )
+	return redirect('login')
+	
 
 
 
