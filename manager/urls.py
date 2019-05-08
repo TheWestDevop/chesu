@@ -3,12 +3,12 @@ from manager.views import *
 
 urlpatterns = [
     
-    path('restaurant/auth/',Auth,name="auth"),
-	path('restaurant/gen/',genadmin,name="genadmin"),
-    path('restaurant/authAdmin/',authAdmin,name="authAdmin"),
-    path('restaurant/Admin/login',loginAdmin,name="loginAdmin"),
-    path('restaurant/Admin/create/user',CreateUser,name="admin-create-user"),
-    path('restaurant/Admin/users',allUser,name="all-user"),
-    path('restaurant/Admin/restaurant',allRestaurant,name="all-restaurant"),
+    path('auth',Auth,name="auth"),
+	path('gen',genadmin,name="genadmin"),
+    path('authAdmin/',authAdmin,name="authAdmin"),
+    path('login',loginAdmin,name="loginAdmin"),
+    path('create/user',CreateUser,name="admin-create-user"),
+    path('users',allUser,name="all-user"),
+    path('restaurant',allRestaurant,name="all-restaurant"),
     
 ]
