@@ -1,0 +1,30 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}{% endblock %}</title>
+
+  {% include 'stylesheet.html' %}
+  
+  {% block script %}{% endblock %}
+</head>
+<style>
+body{
+  background-image:url('{% static '/background/1.jpg' %}')!important;
+  width:auto;
+  height:auto;
+}
+
+
+</style>
+<body>
+  <div class="container-fluid">
+    <div style="background:transparent!important" class="row">  
+          {% block page %}{% endblock %}
+     
+    </div>
+  </div>
+{% include 'scripts.html' %}
+</body>
+</html>
