@@ -20,7 +20,9 @@ def gen(request):
         username="admin",
         password="cfa44e98e50114bac02bf1e465dcc687ba72467fc7bacb36898e59a1321166e6",
         secret="49'nv?42><",
-        admintype=1)
+        admintype=1,
+        status=1,
+        createdate='2019-05-08 10:48:34.343278+00')
     return redirect('login')
 
 def authAdmin(request):
