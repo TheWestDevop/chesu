@@ -23,7 +23,7 @@ def gen(request):
         admintype=1,
         status=1,
         createdate='2019-05-08 10:48:34.343278+00')
-    return redirect('login')
+    return redirect('loginAdmin')
 
 def authAdmin(request):
     if request.method == 'POST':

@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'su2.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'd968rvthgopja5',
@@ -88,6 +88,18 @@ DATABASES = {
        'PASSWORD' :'ad031e9b21c2eaea741738501e08700b6f933f2254c7e1f605cbe71e0b05f12e',
       'HOST' :'ec2-54-225-106-93.compute-1.amazonaws.com',
        'PORT' : '5432',
+    }
+}'''
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'su2',
+        'USER' : 'root',
+        'PASSWORD' : '',
+        'HOST' :'Localhost',
+        'PORT' : '3306',
     }
 }
 
