@@ -2,22 +2,6 @@ from django.db import models
 from django.utils import timezone
 
 
-class RestaurantUser(models.Model):
-      id               = models.AutoField(primary_key=True)
-      username         = models.CharField(max_length=200)
-      password         = models.CharField(max_length=200)
-      secret           = models.CharField(max_length=200,default='')
-      email            = models.CharField(max_length=200,default='')
-      address          = models.CharField(max_length=200,default='')
-      phone            = models.CharField(max_length=200,default='')
-      isemailverified  = models.IntegerField()
-      isphoneverified  = models.IntegerField()
-      status           = models.IntegerField()
-      createdate       = models.DateTimeField(default=timezone.now)
-
-      def get_full_name(self):
-            return self.username
-
 
 class User(models.Model):
       id               = models.AutoField(primary_key=True)
@@ -25,6 +9,9 @@ class User(models.Model):
       password         = models.CharField(max_length=200)
       secret           = models.CharField(max_length=200)
       usertype         = models.IntegerField(default=0)
+      address          = models.CharField(max_length=500)
+      phone            = models.CharField(max_length=500)
+      email            = models.CharField(max_length=200)
       isemailverified  = models.IntegerField(default=0)
       isphoneverified  = models.IntegerField(default=0)
       status           = models.IntegerField(default=0)

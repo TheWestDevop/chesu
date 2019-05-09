@@ -14,7 +14,7 @@ data = {}
 def home(request):
         if request.session.has_key('userId'):
             userid = request.session.get('userId')
-            return render(request, 'website/user_index.html',{"user":RestaurantUser.objects.get(id=userid)})
+            return render(request, 'website/user_index.html',{"user":User.objects.get(id=userid)})
         else:
     	    return redirect('user-login')
 
@@ -39,7 +39,7 @@ def auth(request):
         plainpassword = request.POST.get('password')
 
     try:
-            user = RestaurantUser.objects.get(username=username)
+            user = User.objects.get(username=username)
 
             secret = user.secret
 
@@ -77,7 +77,7 @@ def SignUp(request):
         password = hashPassword(str(plainpassword)+secret)
         phone = request.POST.get('phone')
         address = request.POST.get('address')
-        user = RestaurantUser.objects.create(username=username,password=password,secret=secret,address=address,phone=phone,email=email)
+        user = User.objects.create(username=username,password=password,secret=secret, usertype = 2, address=address,phone=phone,email=email)
         return redirect('user-login')
 
     return redirect('user-register')
