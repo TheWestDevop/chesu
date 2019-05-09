@@ -15,10 +15,9 @@ class User(models.Model):
       isemailverified  = models.IntegerField(default=0)
       isphoneverified  = models.IntegerField(default=0)
       status           = models.IntegerField(default=0)
-      createdate       = models.DateTimeField(default=timezone.now)
+      createdate       = models.CharField(max_length=200)
 
-      def get_full_name(self):
-            return self.username
+      
 
 class Restaurant(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='restaurant')
@@ -34,8 +33,7 @@ class Customer(models.Model):
     phone = models.CharField(max_length=500, blank=True)
     address = models.CharField(max_length=500, blank=True)
 
-    def __str__(self):
-        return self.avatar
+   
 
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='driver')
@@ -44,8 +42,7 @@ class Driver(models.Model):
     address = models.CharField(max_length=500, blank=True)
     location = models.CharField(max_length=500, blank=True)
 
-    def __str__(self):
-        return self.avatar
+  
 
 class Meal(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='meal')
@@ -76,8 +73,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(default = timezone.now)
     picked_at = models.DateTimeField(blank = True, null = True)
 
-    def __str__(self):
-        return str(self.id)
+    
 
 class OrderDetails(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_details')
@@ -85,8 +81,7 @@ class OrderDetails(models.Model):
     quantity = models.IntegerField()
     sub_total = models.IntegerField()
 
-    def __str__(self):
-        return str(self.id)
+    
 
 class Admin(models.Model):
        id            = models.AutoField(primary_key=True)
@@ -95,7 +90,7 @@ class Admin(models.Model):
        secret        = models.CharField(max_length=20)
        admintype     = models.IntegerField()
        status        = models.IntegerField()
-       createdate    = models.DateTimeField(default=timezone.now)
+       createdate    = models.CharField(max_length=200)
 
 class AdminType(models.Model):
        id            = models.AutoField(primary_key=True)
