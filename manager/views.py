@@ -16,7 +16,7 @@ import hashlib
 	
 
 def gen(request):
-    user = Admin.objects.create(username="admin",password="cfa44e98e50114bac02bf1e465dcc687ba72467fc7bacb36898e59a1321166e6",secret="49'nv?42><")
+    Admin.objects.create(username="admin",password="cfa44e98e50114bac02bf1e465dcc687ba72467fc7bacb36898e59a1321166e6",secret="49'nv?42><",admintype=1
     return redirect('login')
 
 def authAdmin(request):
