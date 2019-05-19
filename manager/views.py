@@ -37,7 +37,13 @@ def authAdmin(request):
             secret = user.secret
             
             passwordConfirm = hashPassword(plainpassword+secret)
-        
+            
+            if Admin.objects.get(username=username).count()>0:
+                 errormsg = "Multiple Account Seen"
+                 messages.error(request,errormsg)
+                 return redirect('loginAdmin')
+               
+
 
             if passwordConfirm == user.password :
               request.session['userId'] = user.id
