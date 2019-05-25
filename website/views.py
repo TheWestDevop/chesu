@@ -77,7 +77,7 @@ def SignUp(request):
         password = hashPassword(str(plainpassword)+secret)
         phone = request.POST.get('phone')
         address = request.POST.get('address')
-        RestaurantUser.objects.create(username=username,password=password,secret=secret,address=address,phone=phone,email=email)
+        user = RestaurantUser.objects.create(username=username,password=password,secret=secret,address=address,phone=phone,email=email)
         return redirect('user-login')
 
     return redirect('user-register')

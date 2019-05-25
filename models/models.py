@@ -1,6 +1,24 @@
 from django.db import models
 from django.utils import timezone
 
+
+class RestaurantUser(models.Model):
+      id               = models.AutoField(primary_key=True)
+      username         = models.CharField(max_length=200)
+      password         = models.CharField(max_length=200)
+      secret           = models.CharField(max_length=200,default='')
+      email            = models.CharField(max_length=200,default='')
+      address          = models.CharField(max_length=200,default='')
+      phone            = models.CharField(max_length=200,default='')
+      isemailverified  = models.IntegerField(default=0)
+      isphoneverified  = models.IntegerField(default=0)
+      status           = models.IntegerField(default=0)
+      createdate       = models.DateTimeField(default=timezone.now)
+
+      def get_full_name(self):
+            return self.username
+
+
 class User(models.Model):
       id               = models.AutoField(primary_key=True)
       username         = models.CharField(max_length=200)
@@ -100,21 +118,5 @@ class AdminType(models.Model):
 class UserType(models.Model):
       id   = models.AutoField(primary_key=True)
       name = models.CharField(max_length=20)
-
-class RestaurantUser(models.Model):
-      id               = models.AutoField(primary_key=True)
-      username         = models.CharField(max_length=200)
-      password         = models.CharField(max_length=200)
-      secret           = models.CharField(max_length=200,default='')
-      email            = models.CharField(max_length=200,default='')
-      address          = models.CharField(max_length=200,default='')
-      phone            = models.CharField(max_length=200,default='')
-      isemailverified  = models.IntegerField(default=0)
-      isphoneverified  = models.IntegerField(default=0)
-      status           = models.IntegerField(default=0)
-      createdate       = models.DateTimeField(default=timezone.now)
-
-      def get_full_name(self):
-            return self.username
 
 
