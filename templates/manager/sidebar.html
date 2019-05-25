@@ -2,11 +2,11 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'users' %}">
       <div class="sidebar-brand-icon rotate-n-15">
         <i class="fas fa-laugh-wink"></i>
       </div>
-      <div class="sidebar-brand-text mx-3">{{restaurant.name}}<br>Restaurant</div>
+      <div class="sidebar-brand-text mx-3">{{admin.username}}</div>
 
     </a>
 
@@ -15,7 +15,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-      <a class="nav-link" href="{% url 'order' %}">
+      <a class="nav-link" href="{% url 'users' %}">
         <i class="fas fa-fw fa-home"></i>
         <span>Home</span></a>
     </li>
@@ -30,13 +30,20 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="{% url 'meal' %}" >
-        <i class="fas fa-fw fa-hamburger"></i>
-        <span>Meal</span>
+      <a class="nav-link collapsed" href="{% url 'users' %}" >
+        <i class="fas fa-fw fa-user"></i>
+        <span>User</span>
       </a>
     </li>
 
     <!-- Nav Item - Utilities Collapse Menu -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'restaurant' %}" >
+        <i class="fas fa-fw fa-store-alt"></i>
+        <span>Restaurant</span>
+      </a>
+
+    </li>
     <li class="nav-item">
       <a class="nav-link collapsed" href="{% url 'order' %}" >
         <i class="fas fa-fw fa-truck"></i>
@@ -45,40 +52,33 @@
 
     </li>
     <li class="nav-item">
-      <a class="nav-link collapsed" href="{% url 'customer' %}" >
+      <a class="nav-link collapsed" href="{% url 'meals' %}" >
+        <i class="fas fa-fw fa-hamburger"></i>
+        <span>Meal</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'customers' %}" >
         <i class="fas fa-fw fa-users"></i>
         <span>Customer</span>
       </a>
 
     </li>
-    <!-- Divider -->
-    <hr class="sidebar-divider">
 
     <!-- Nav Item - Charts -->
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'report' %}">
+      <a class="nav-link" href="#">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Reports</span></a>
     </li>
 
-    <!-- Nav Item - Tables -->
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'account' %}">
-        <i class="fas fa-fw fa-user"></i>
-        <span>Account</span></a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'logout' %}">
+      <a class="nav-link" href="{% url 'logoutAdmin' %}">
         <i class="fas fa-fw fa-sign-out-alt"></i>
         <span>Log out</span></a>
     </li>
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
+    
 
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-      <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
 
   </ul>
   

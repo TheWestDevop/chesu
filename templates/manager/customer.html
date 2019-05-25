@@ -13,31 +13,24 @@
             
             <div class="panel">
                 <div class="panel-heading bg-blue">
-                    <h4 class="panel-title h3 text-center text-gray-800">Users</h4>
+                    <h4 class="panel-title h3 text-center text-gray-800">Customers</h4>
                 </div>
                 <div class="panel-body table-responsive">
                     <br/>
                     <table class="table table-bordered table-hover table-striped">
                         <thead>
                           <tr class="bg-gray">
-                            <th>Username</th>
-                            <th>Usertype</th>
-                            <th>isEmailVerified</th>
-                            <th>isPhoneVerified</th>
-                            <th>Status</th>
-                            <th>Date Registered</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Address</th>
                           </tr>
                         </thead>
                         <tbody>
-                            {% for user in users %}
-                                <tr>
-                                    
-                                    <td>{{ user.username }}</td>
-                                    <td>{{ user.usertype }}</td> 
-                                    <td>{{ user.isemailverified }}</td>
-                                    <td>{{ user.isphoneverified }}</td> 
-                                    <td>{{ user.status }}</td>
-                                    <td>{{ user.createdate }}</td>
+                            {% for user in customers %}
+                                <tr>  
+                                    <td>{{ user.avatar }}</td>
+                                    <td>{{ user.phone }}</td> 
+                                    <td>{{ user.address }}</td>
                                 </tr>
                             {% endfor %}
         

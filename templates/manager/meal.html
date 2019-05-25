@@ -11,20 +11,12 @@
           <div class="container-fluid">
   
             <!-- Page Heading -->
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-              <h1 class="h3 mb-0 text-gray-800">Meal</h1>
-            </div>
             <div class="panel">
                 <div class="panel-heading bg-blue">
-                    <h4 class="panel-title text-center ">Meals</h4>
+                    <h4 class="panel-title h3 mb-0 text-gray-800 text-center ">Meals</h4>
                 </div>
-                <div class="panel-body">
-                    <div class="text-right">
-                        <a href="{% url 'addmeal' %}" class="btn btn-primary">Add Meal</a>
-                        <br/>
-                        <br/>
-                    </div>
-        
+                <div class="panel-body table-responsive">
+                
                     <table class="table table-bordered table-hover table-striped">
                         <thead>
                           <tr class="bg-gray">
@@ -32,6 +24,7 @@
                             <th>Short Description</th>
                             <th>Price</th>
                             <th class="text-center">Image</th>
+                            <th>Restaurant Id</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -42,11 +35,7 @@
                                   <td>{{ meal.price }}</td>
                                   <td class="text-center"><img class="img-rounded"
                                       src="{{ meal.image.url }}" width="50" height="50"></td>
-                                    <td style="background-color:transparent!important">
-                                        <a href="{%  url  'edit-meal' meal.id %}">
-                                            <button class="btn btn-info">Edit</button>
-                                        </a>
-                                    </td>
+                                    <td>{{ meal.restaurant_id}}</td>
                                 </tr>
         
                             {% endfor %}

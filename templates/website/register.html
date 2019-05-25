@@ -89,18 +89,22 @@
                                     <div class="loginnow">
                                         <h5>Register</h5>
                                         <p>Do You have an account? So <a href="login.html">login</a> And starts less than a minute</p>
-                                        <form method="post" enctype="multipart/form-data">
+                                        <form method="post" action="{% url 'user-sign-up' %}" enctype="multipart/form-data">
+                                           {% csrf_token %}
                                             <div class="form-group">
-                                                <i class="icofont icofont-ui-user"></i><input type="text" name="name" value="" placeholder="NAME" id="input-name" class="form-control" />
+                                                <i class="icofont icofont-ui-user"></i><input type="text" name="username" value="" placeholder="USERNAME" id="input-name" class="form-control" />
                                             </div>
+                                            <div class="form-group">
+                                                    <i class="icofont icofont-ui-user"></i><input type="text" name="phone" value="" placeholder="PHONE" id="input-name" class="form-control" />
+                                                </div>
+                                                <div class="form-group">
+                                                        <i class="icofont icofont-ui-user"></i><input type="text" name="address" value="" placeholder="ADDRESS" id="input-name" class="form-control" />
+                                                    </div>
                                             <div class="form-group">
                                                 <i class="icofont icofont-ui-message"></i><input type="text" name="email" value="" placeholder="EMAIL" id="email" class="form-control" />
                                             </div>
                                             <div class="form-group">
                                                 <i class="icofont icofont-lock"></i><input type="password" name="password" value="" placeholder="PASSWORD" id="input-password" class="form-control" />
-                                            </div>
-                                            <div class="form-group">
-                                                <i class="icofont icofont-lock"></i><input type="text" name="confirm" value="" placeholder="REPEAT PASSWORD" id="input-confirm" class="form-control" />
                                             </div>
                                             <div class="form-group">
                                                 <div class="links">
