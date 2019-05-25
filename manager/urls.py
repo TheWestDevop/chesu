@@ -2,8 +2,6 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    
-    path('gen',genadmin,name="gen"),
 	path('meal',allMeals,name="meals"),
     path('authAdmin',authAdmin,name="authAdmin"),
     path('login',loginAdmin,name="loginAdmin"),
