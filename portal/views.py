@@ -76,7 +76,10 @@ def SignUp(request):
         logo = request.FILES['logo']
         fs = FileSystemStorage()
         filename = fs.save(logo.name.strip(), logo)
-
+        if User.objects.filter(username=username).count() > 0:
+            errormsg = "username already restaurant"
+            messages.error(request,errormsg)
+            return redirect('login')
         user = User.objects.create(username=username,password=password,secret=secret )
         restaurant = Restaurant.objects.create(
             user=user,

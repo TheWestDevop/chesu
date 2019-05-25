@@ -13,15 +13,6 @@ import string
 import hashlib
 # Create your views here.
 
-
-
-def genadmin(request):
-	username = "admin"
-	plainpassword = "admin"
-	secret = secretGenerator()
-	password = hashPassword(str(plainpassword)+secret)
-	user = Admin.objects.create(username=username,password=password,secret=secret,admintype=1,status=0)
-	return redirect('loginAdmin')
 	
 
 def authAdmin(request):

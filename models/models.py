@@ -10,9 +10,9 @@ class RestaurantUser(models.Model):
       email            = models.CharField(max_length=200,default='')
       address          = models.CharField(max_length=200,default='')
       phone            = models.CharField(max_length=200,default='')
-      isemailverified  = models.IntegerField(default=0)
-      isphoneverified  = models.IntegerField(default=0)
-      status           = models.IntegerField(default=0)
+      isemailverified  = models.IntegerField()
+      isphoneverified  = models.IntegerField()
+      status           = models.IntegerField()
       createdate       = models.DateTimeField(default=timezone.now)
 
       def get_full_name(self):
